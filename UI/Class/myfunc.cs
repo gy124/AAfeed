@@ -2268,11 +2268,11 @@ namespace UI
     public static class WsTrayMove
     {
        
-        public static GPIO sen_tray_get = MT.CKPOS_MOVE_get_plate;
-        public static GPIO sen_tray_store = MT.CKPOS_MOVE_middle_plate;
-        public static GPIO sen_tray_back = MT.CKPOS_MOVE_back_plate;
-        public static Cylinder vacu_move = MT.VACUM_move_plate;
-        public static AXIS ax_Z = MT.AXIS_bullet_move;
+         static GPIO sen_tray_get = MT.CKPOS_MOVE_get_plate;
+         static GPIO sen_tray_store = MT.CKPOS_MOVE_middle_plate;
+         static GPIO sen_tray_back = MT.CKPOS_MOVE_back_plate;
+         static Cylinder vacu_move = MT.VACUM_move_plate;
+         static AXIS ax_Z = MT.AXIS_bullet_move;
         public static Mact GetTray;
         public static Mact PutTray;
         public static Mact ToSafe;
@@ -2637,13 +2637,13 @@ namespace UI
                 VAR.msg.AddMsg(Msg.EM_MSGTYPE.ERR, string.Format("{0} 取料和收料工站未退出!", disc));
                 return EM_RES.ERR;
             }
-            if (!WSGet.ax_x.isORG)
+            if (!MT.AXIS_GET_X.isORG)
             {
-                ret = WSGet.ax_z.MoveTo(ref bquit, 99999, 5000);
+                ret = MT.AXIS_GET_Z.MoveTo(ref bquit, 99999, 5000);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSGet.ax_x.MoveTo(ref bquit, 99999, 5000);
+                ret = MT.AXIS_GET_X.MoveTo(ref bquit, 99999, 5000);
                 if (ret != EM_RES.OK) return ret;
-                if (!WSGet.ax_x.isELP)
+                if (!MT.AXIS_GET_X.isELP)
                 {
                     VAR.msg.AddMsg(Msg.EM_MSGTYPE.ERR, string.Format("{0} q取料工站到正限位异常!", disc));
                     return EM_RES.ERR;
@@ -3531,20 +3531,20 @@ namespace UI
     #region 取料
     public class WSGet
     {
-       
+
         public static TrayBox tbox_get = COM.traybox_get;
-        public static Product.Tray tray_now=new Product.Tray(9);
-        
-        public static AXIS ax_x = MT.AXIS_GET_X;
-        public static AXIS ax_y = MT.AXIS_GET_Y;
-        public static AXIS ax_z = MT.AXIS_GET_Z;
-        public static AXIS ax_a = MT.AXIS_GET_A;
+        public static Product.Tray tray_now = new Product.Tray(9);
+
+        static AXIS ax_x = MT.AXIS_GET_X;
+        static AXIS ax_y = MT.AXIS_GET_Y;
+        static AXIS ax_z = MT.AXIS_GET_Z;
+        static AXIS ax_a = MT.AXIS_GET_A;
         static Cylinder cyl_z = MT.CYL_get_up;
         static Cylinder zk_z = MT.VACUM_get_mouth;
         static GPIO sen_plate_at_get = MT.CKPOS_MOVE_get_plate;
         static POS ps_sf = MT.pos_get_safe;
-      public  static POS ps_pho_L = MT.pos_get_photo_L;
-      public  static POS ps_pho_R = MT.pos_get_photo_R;
+        static POS ps_pho_L = MT.pos_get_photo_L;
+        static POS ps_pho_R = MT.pos_get_photo_R;
         static POS ps_put_L = MT.pos_get_put_L;
         static POS ps_put_R = MT.pos_get_put_R;
         static POS ps_put_to_L = MT.pos_get_to_put_L;
@@ -3556,15 +3556,15 @@ namespace UI
 
         public static bool bOK
         {
-            get 
+            get
             {
                 if (bLPutOK && bRPutOK)
                     return true;
                 else return false;
             }
-            set 
+            set
             {
-                if (value )
+                if (value)
                 {
                     bLPutOK = true;
                     bRPutOK = true;
@@ -3579,7 +3579,6 @@ namespace UI
         //单点取料次数 
 
         //连续取料失败次数要报警
-        public static int modu_id;
         public static string disc = "取料工站-";
         //拍照选择左右
         public static bool bLPutOK;
@@ -3654,7 +3653,7 @@ namespace UI
         /// <returns></returns>
         public static EM_RES ck_ax_safe(int id, double pos = 0)
         {
-            bool bquit=false;
+            bool bquit = false;
             int i = 0;
             double max = 9999;
             try
@@ -3677,13 +3676,13 @@ namespace UI
 
                 return EM_RES.OK;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 VAR.ErrMsg(e.ToString());
                 return EM_RES.ERR;
             }
-           
-           
+
+
 
         }
         public static string GetStaString
@@ -3694,7 +3693,7 @@ namespace UI
 
             }
         }//获取状态翻译
-        public static EM_RES DoAct(ref  Mact act)  //执行委托
+        public static EM_RES DoAct(ref Mact act)  //执行委托
         {
             EM_RES ret;
             try
@@ -3720,9 +3719,9 @@ namespace UI
                 }
                 return ret;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                VAR.msg.AddMsg(Msg.EM_MSGTYPE.ERR, string.Format("{0}--{1}-{}-" , disc, GetStaString,e.ToString()));
+                VAR.msg.AddMsg(Msg.EM_MSGTYPE.ERR, string.Format("{0}--{1}-{}-", disc, GetStaString, e.ToString()));
                 //设置系统状态
                 status = EM_STA.ERR;
                 VAR.gsys_set.bquit = true;
@@ -3799,10 +3798,10 @@ namespace UI
         public static EM_RES m_ActGet(ref bool bquit)
         {
             EM_RES ret = EM_RES.OK;
-          
+
             try
             {
-                
+
                 tray_now = COM.product.TrayGet;
                 if (tray_now == null)
                 {
@@ -3822,7 +3821,7 @@ namespace UI
                 ret = ps_sf.MoveTo(ref bquit, true); //安全
                 if (ret != EM_RES.OK) return ret;
 
-                ret = tray_now.ToPosId( MT.pos_get_plate_star,ref bquit);   //到取料位置
+                ret = tray_now.ToPosId(MT.pos_get_plate_star, ref bquit);   //到取料位置
                 if (ret != EM_RES.OK) return ret;
                 ret = ps_zDown.MoveTo(ref bquit, true);
                 if (ret != EM_RES.OK) return ret;
@@ -3833,8 +3832,8 @@ namespace UI
                     ret = zk_z.SetOn(ref bquit, 4000);
                     if (ret != EM_RES.OK) return ret;
                 }
-                    ret = ps_zUP.MoveTo(ref bquit, true);
-                    if (ret != EM_RES.OK) return ret;
+                ret = ps_zUP.MoveTo(ref bquit, true);
+                if (ret != EM_RES.OK) return ret;
 
                 if (zk_z.isONByChkSen || Action.bNullRun)
                 {
@@ -3853,7 +3852,7 @@ namespace UI
             finally
             {
                 ret = ps_zUP.MoveTo(ref bquit, true);
-              
+
 
             }
         }
@@ -3869,12 +3868,12 @@ namespace UI
                     ret = ps_pho_L.MoveTo(ref bquit, true); //安全
                     if (ret != EM_RES.OK) return ret;
                     ret = COM.MVS.m_camera_action(1, out Move_L);
-                   if (ret != EM_RES.OK) return ret;                
-                   return ret;
+                    if (ret != EM_RES.OK) return ret;
+                    return ret;
                 }
                 else if (!bRPutOK)
                 {
-                   
+
                     ret = ps_pho_R.MoveTo(ref bquit, true); //安全
                     if (ret != EM_RES.OK) return ret;
                     ret = COM.MVS.m_camera_action(2, out Move_R);
@@ -3901,7 +3900,7 @@ namespace UI
             status = EM_STA.PLACE;
             try
             {
-                if (!zk_z.isONByChkSen&&!Action.bNullRun)
+                if (!zk_z.isONByChkSen && !Action.bNullRun)
                 {
                     VAR.msg.AddMsg(Msg.EM_MSGTYPE.ERR, string.Format("{0} {1}吸嘴无料!", disc, GetStaString));
                     return EM_RES.ERR;
@@ -3931,26 +3930,26 @@ namespace UI
                 }
                 else
                     if (!bRPutOK)
-                    {
-                        ret = ps_put_to_R.MoveTo(ref bquit, true); //安全
-                        if (ret != EM_RES.OK) return ret;
-                        ret = ps_put_R.MoveTo(ref bquit, true); //安全
-                        if (ret != EM_RES.OK) return ret;
-                        ret = MT.AXIS_GET_X.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_X.fcmd_pos + Move_R.x, 2000);
-                        if (ret != EM_RES.OK) return ret;
-                        ret = MT.AXIS_GET_Y.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_X.fcmd_pos + Move_R.y, 2000);
-                        if (ret != EM_RES.OK) return ret;
-                        ret = MT.AXIS_GET_A.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_A.fcmd_pos + Move_R.z, 2000);
-                        if (ret != EM_RES.OK) return ret;
-                        ret = m_ActPut(ref bquit);
-                        if (ret != EM_RES.OK) return ret;
-                        ret = ps_put_R.MoveTo(ref bquit, true); //安全
-                        if (ret != EM_RES.OK) return ret;
-                        ret = ps_put_to_R.MoveTo(ref bquit, true); //安全
-                        if (ret != EM_RES.OK) return ret;
-                    }
-                    else
-                        return EM_RES.OK;
+                {
+                    ret = ps_put_to_R.MoveTo(ref bquit, true); //安全
+                    if (ret != EM_RES.OK) return ret;
+                    ret = ps_put_R.MoveTo(ref bquit, true); //安全
+                    if (ret != EM_RES.OK) return ret;
+                    ret = MT.AXIS_GET_X.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_X.fcmd_pos + Move_R.x, 2000);
+                    if (ret != EM_RES.OK) return ret;
+                    ret = MT.AXIS_GET_Y.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_X.fcmd_pos + Move_R.y, 2000);
+                    if (ret != EM_RES.OK) return ret;
+                    ret = MT.AXIS_GET_A.MoveTo(ref VAR.gsys_set.bquit, MT.AXIS_GET_A.fcmd_pos + Move_R.z, 2000);
+                    if (ret != EM_RES.OK) return ret;
+                    ret = m_ActPut(ref bquit);
+                    if (ret != EM_RES.OK) return ret;
+                    ret = ps_put_R.MoveTo(ref bquit, true); //安全
+                    if (ret != EM_RES.OK) return ret;
+                    ret = ps_put_to_R.MoveTo(ref bquit, true); //安全
+                    if (ret != EM_RES.OK) return ret;
+                }
+                else
+                    return EM_RES.OK;
                 return ret;
             }
             catch
@@ -4014,19 +4013,19 @@ namespace UI
                 }
                 else
                 {
-                    
+
                     tray_now = COM.product.TrayGet;
-                    if (tray_now==null)
+                    if (tray_now == null)
                     {
                         goto MEND;
                     }
-                    else if ( tray_now.bEmpty )  //空盘收料
+                    else if (tray_now.bEmpty)  //空盘收料
                     {
                         WsTrayMove.task_run();
                         status = EM_STA.WAIT;
                         goto MEND;
                     }
-                    if (!WsTrayMove.ax_Z.isORG)
+                    if (!MT.AXIS_bullet_move.isORG)
                     {
                         WsTrayMove.task_run();
                         status = EM_STA.WAIT;
@@ -4038,7 +4037,7 @@ namespace UI
                     if (ret != EM_RES.OK) goto MEND;
                     ret = DoAct(ref ToPut);
                     if (ret != EM_RES.OK) goto MEND;
-              
+
                 }
             MEND:
 
@@ -4091,9 +4090,6 @@ namespace UI
                 return EM_RES.ERR;
             }
         }
-
-
-
     }
     #endregion
     #region   收料
@@ -4484,7 +4480,7 @@ namespace UI
             }
             if (!isReady) goto MEND;
             AllAct();
-            if (!WsTrayMove.sen_tray_back.AssertON())//检测盘不在位
+            if (!MT.CKPOS_MOVE_back_plate.AssertON())//检测盘不在位
             {
                 tray_now = null;
                 WsBuFD.task_run();//出料盘
@@ -4493,12 +4489,12 @@ namespace UI
             }
             tray_now = COM.product.TrayBackOK;
             if (tray_now == null) return;
-            if (tray_now.bFull && WsTrayMove.sen_tray_back.AssertON())  //满盘进料
+            if (tray_now.bFull && MT.CKPOS_MOVE_back_plate.AssertON())  //满盘进料
             {
                 WsTrayMove.task_run();
                 goto MEND;
             }
-            if (!WsTrayMove.ax_Z.isORG)
+            if (!MT.AXIS_bullet_move.isORG)
             {
                 WsTrayMove.task_run();
                 status = EM_STA.WAIT;
@@ -8911,21 +8907,21 @@ namespace UI
             ST_XYZ start_pos,xmove_pos,ymove_pos;
             if(cam_id==1)
             {
-                ret = WSGet.ps_pho_L.MoveTo(ref  bquit,true);
+                ret = MT.pos_get_photo_L.MoveTo(ref  bquit,true);
                 ret = get_vs(out start_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSGet.ps_pho_L.AxisX.MoveTo(ref bquit, WSGet.ps_pho_L.AxisX.fcmd_pos + scale_length,3000);
+                ret = MT.pos_get_photo_L.AxisX.MoveTo(ref bquit, MT.pos_get_photo_L.AxisX.fcmd_pos + scale_length,3000);
                 if (ret != EM_RES.OK) return ret; 
                 ret = get_vs(out xmove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret; 
                 st_set.modu_x_scale.x = (xmove_pos.x - start_pos.x) / scale_length;
                 st_set.modu_x_scale.y = (xmove_pos.y - start_pos.y) / scale_length;
               
-                ret = WSGet.ps_pho_L.MoveTo(ref  bquit, true);
+                ret = MT.pos_get_photo_L.MoveTo(ref  bquit, true);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out start_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSGet.ps_pho_L.AxisY.MoveTo(ref bquit, WSGet.ps_pho_L.AxisY.fcmd_pos + scale_length, 3000);
+                ret = MT.pos_get_photo_L.AxisY.MoveTo(ref bquit, MT.pos_get_photo_L.AxisY.fcmd_pos + scale_length, 3000);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out ymove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
@@ -8937,7 +8933,7 @@ namespace UI
                 ret = WSFeed.ps_photo_L.MoveTo(ref  bquit, true);       
                 ret = get_vs(out start_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSFeed.ps_photo_L.AxisX.MoveTo(ref bquit, WSGet.ps_pho_L.AxisX.fcmd_pos + scale_length, 3000);
+                ret = WSFeed.ps_photo_L.AxisX.MoveTo(ref bquit, MT.pos_get_photo_L.AxisX.fcmd_pos + scale_length, 3000);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out xmove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
@@ -8948,7 +8944,7 @@ namespace UI
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out start_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSFeed.ps_photo_L.AxisY.MoveTo(ref bquit, WSGet.ps_pho_L.AxisY.fcmd_pos + scale_length, 3000);
+                ret = WSFeed.ps_photo_L.AxisY.MoveTo(ref bquit, MT.pos_get_photo_L.AxisY.fcmd_pos + scale_length, 3000);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out ymove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
@@ -8965,14 +8961,14 @@ namespace UI
             ST_XYZ start_pos, xmove_pos, ymove_pos;
             if (cam_id == 1)
             {
-                ret = WSGet.ps_pho_L.MoveTo(ref  bquit, true);
+                ret = MT.pos_get_photo_L.MoveTo(ref  bquit, true);
                 ret = get_vs(out start_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSGet.ps_pho_L.AxisA.MoveTo(ref bquit, WSGet.ps_pho_L.AxisA.fcmd_pos + scale_angle, 3000);
+                ret = MT.pos_get_photo_L.AxisA.MoveTo(ref bquit, MT.pos_get_photo_L.AxisA.fcmd_pos + scale_angle, 3000);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out xmove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
-                ret = WSGet.ps_pho_L.AxisA.MoveTo(ref bquit, WSGet.ps_pho_L.AxisA.fcmd_pos + scale_angle, 3000);
+                ret = MT.pos_get_photo_L.AxisA.MoveTo(ref bquit, MT.pos_get_photo_L.AxisA.fcmd_pos + scale_angle, 3000);
                 if (ret != EM_RES.OK) return ret;
                 ret = get_vs(out ymove_pos, cam_id);
                 if (ret != EM_RES.OK) return ret;
